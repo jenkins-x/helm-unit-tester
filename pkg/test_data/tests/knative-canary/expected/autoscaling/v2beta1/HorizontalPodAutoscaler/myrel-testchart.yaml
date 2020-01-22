@@ -1,4 +1,5 @@
 # Source: testchart/templates/hpa.yaml
+
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:

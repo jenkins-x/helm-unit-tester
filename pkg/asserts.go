@@ -38,7 +38,15 @@ func AssertHelmTemplate(t *testing.T, chart string, outDir, valuesDir string) (s
 	fileNames := []string{}
 	releaseName := "myrel"
 
+	helm2, err := checkIfHelm2(t)
+	if err != nil {
+		return "", nil, err
+	}
 	args := []string{"template", releaseName, chart, "--output-dir", outDir}
+	if helm2 {
+		t.Logf("using helm 2.x binary/n")
+		args = []string{"template", "--name", releaseName, chart, "--output-dir", outDir}
+	}
 
 	files, err := ioutil.ReadDir(valuesDir)
 	require.NoError(t, err, "could not read dir %s", valuesDir)
