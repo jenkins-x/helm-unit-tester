@@ -1,0 +1,51 @@
+# Source: testchart/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myrel-testchart
+  labels:
+    draft: draft-app
+    chart: "testchart-0.1.0-SNAPSHOT"
+spec:
+  selector:
+    matchLabels:
+      app: myrel-testchart
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        draft: draft-app
+        app: myrel-testchart
+    spec:
+      containers:
+      - name: testchart
+        image: "draft:dev"
+        imagePullPolicy: IfNotPresent
+        env:
+        envFrom:
+          null
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 400m
+              memory: 512Mi
+      terminationGracePeriodSeconds:

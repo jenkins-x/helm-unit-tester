@@ -1,0 +1,10 @@
+knativeDeploy: true
+
+# HorizontalPodAutoscaler
+hpa:
+  enabled: true
+
+# Canary deployments
+# If enabled, Istio and Flagger need to be installed in the cluster
+canary:
+  enabled: false
