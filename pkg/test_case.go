@@ -31,6 +31,10 @@ func (c *TestCase) Run() {
 	require.NoError(t, err, "failed to generate helm templates")
 	require.NotEmpty(t, resultsDir, "no resultsDir returned")
 
+	if GenerateExpectedFiles.Value() {
+		c.RegenerateExpectedFiles(t, resultsDir)
+		return
+	}
 	c.AssertYamlExpected(t, resultsDir)
 }
 
@@ -91,4 +95,32 @@ func (c *TestCase) AssertYamlExpected(t *testing.T, actualDir string) {
 			assert.NoError(t, err, "failed to verify no extra files were created")
 		}
 	}
+}
+
+// RegenerateExpectedFiles regenerates the expected files
+func (c *TestCase) RegenerateExpectedFiles(t *testing.T, actualDir string) {
+	expectedDir := c.ExpectedDir
+	t.Logf("regenerating the expected files for test %s into dir %s", c.Name, expectedDir)
+	count := 0
+	err := filepath.Walk(actualDir,
+		func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			if !info.IsDir() && filepath.Ext(path) == ".yaml" {
+				relPath, err := filepath.Rel(actualDir, path)
+				if err != nil {
+					return errors.Wrapf(err, "failed to get base path for %s", path)
+				}
+				expectedFile := filepath.Join(expectedDir, relPath)
+				err = CopyFile(path, expectedFile)
+				if err != nil {
+					return errors.Wrapf(err, "failed to copy result to expected file %s", expectedFile)
+				}
+				count++
+			}
+			return nil
+		})
+	require.NoError(t, err, "failed to regenerate expected files")
+	t.Logf("regenerated %d expected files mto %s\n", count, expectedDir)
 }

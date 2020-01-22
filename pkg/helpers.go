@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -191,4 +192,48 @@ func checkIfHelm2(t *testing.T) (bool, error) {
 		}
 	}
 	return false, nil
+}
+
+// credit https://gist.github.com/r0l1/92462b38df26839a3ca324697c8cba04
+func CopyFile(src, dst string) (err error) {
+	dstDir := filepath.Dir(dst)
+	err = os.MkdirAll(dstDir, DefaultDirWritePermissions)
+	if err != nil {
+		return errors.Wrapf(err, "failed to create parent dir %s", dstDir)
+	}
+	in, err := os.Open(src)
+	if err != nil {
+		return
+	}
+	defer in.Close()
+
+	out, err := os.Create(dst)
+	if err != nil {
+		return
+	}
+	defer func() {
+		if e := out.Close(); e != nil {
+			err = e
+		}
+	}()
+
+	_, err = io.Copy(out, in)
+	if err != nil {
+		return
+	}
+
+	err = out.Sync()
+	if err != nil {
+		return
+	}
+
+	si, err := os.Stat(src)
+	if err != nil {
+		return
+	}
+	err = os.Chmod(dst, si.Mode())
+	if err != nil {
+		return
+	}
+	return
 }

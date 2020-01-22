@@ -21,3 +21,15 @@ You can also override the default properties of each `TestCase` via a little [te
 ## Helm 2 v 3
 
 The library handles the CLI differences between 2 and 3; though note ther are subtle differences in the output of 2 and 3
+
+## Regenerating the expected YAML files
+
+sometimes you'll change helm versions or change the underlying charts and the YAML that is generated will change.
+
+To auto-regenerate the expected YAML you can use a feature flag
+
+``` 
+export HELM_UNIT_REGENERATE_EXPECTED=true
+```
+
+then run your tests and the expected yamls will be regenerated for you. You can do a git diff to view the actual changes.
