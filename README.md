@@ -18,4 +18,6 @@ You can also run your test and then just copy the generated yaml files into your
 
 You can also override the default properties of each `TestCase` via a little [testcase.yml](pkg/test_data/tests/missing-resource/testcase.yml) file in your test case if you want to. e.g. to enable diferent flags.
 
- 
+## Helm 2 v 3
+
+The library handles the CLI differences between 2 and 3; though note ther are subtle differences in the output of 2 and 3

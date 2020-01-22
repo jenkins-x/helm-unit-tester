@@ -1,4 +1,5 @@
 # Source: testchart/templates/ksvc.yaml
+
 apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
@@ -35,3 +36,4 @@ spec:
               requests:
                 cpu: 400m
                 memory: 512Mi
+              

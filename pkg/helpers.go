@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -170,4 +171,24 @@ func FileExists(path string) (bool, error) {
 		return false, nil
 	}
 	return true, errors.Wrapf(err, "failed to check if file exists %s", path)
+}
+
+func checkIfHelm2(t *testing.T) (bool, error) {
+	cmd := exec.Command("helm", "version", "-c", "--short")
+	data, err := cmd.CombinedOutput()
+	if data != nil {
+		t.Logf("helm version: %s\n", string(data))
+	}
+	if err != nil {
+		return false, err
+	}
+
+	fields := strings.Split(strings.TrimSpace(string(data)), " ")
+	if len(fields) > 1 {
+		v := strings.TrimPrefix(fields[1], "v")
+		if strings.HasPrefix(v, "2.") {
+			return true, nil
+		}
+	}
+	return false, nil
 }
