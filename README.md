@@ -12,4 +12,10 @@ For each test directory you can give a list of values YAML files to be passed in
 
 Then you can specify the folder tree of the expected resources created your chart such as [this example](pkg/test_data/tests/default/expected/apps/v1/Deployment).
 
-You can also run your test and then just copy the generated yaml files into your `expected` folder ;) 
+You can also run your test and then just copy the generated yaml files into your `expected` folder ;)
+
+### testcase.yml
+
+You can also override the default properties of each `TestCase` via a little [testcase.yml](pkg/test_data/tests/missing-resource/testcase.yml) file in your test case if you want to. e.g. to enable diferent flags.
+
+ 
