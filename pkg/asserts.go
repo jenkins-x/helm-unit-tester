@@ -42,6 +42,21 @@ func AssertHelmTemplate(t *testing.T, chart string, outDir, valuesDir string) (s
 	if err != nil {
 		return "", nil, err
 	}
+	// lets check if we have a requirements file
+	requirementsFile := filepath.Join(chart, "requirements.yaml")
+	exists, err := FileExists(requirementsFile)
+	if err == nil && exists {
+		// lets fetch dependencies
+		t.Logf("building helm dependencies/n")
+		args := []string{"dependency", "build", chart}
+		cmd := exec.Command("helm", args...)
+		data, err := cmd.CombinedOutput()
+		if data != nil {
+			t.Logf("result: %s\n", string(data))
+		}
+		require.NoError(t, err, "failed to build dependencies: helm %s", strings.Join(args, " "))
+	}
+
 	args := []string{"template", releaseName, chart, "--output-dir", outDir}
 	if helm2 {
 		t.Logf("using helm 2.x binary/n")
