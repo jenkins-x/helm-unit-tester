@@ -33,3 +33,11 @@ export HELM_UNIT_REGENERATE_EXPECTED=true
 ```
 
 then run your tests and the expected yamls will be regenerated for you. You can do a git diff to view the actual changes.
+
+## Adding custom validation
+
+Once the unit tests have completed you may want to add your own validation to verify the generated YAML looks how you imagine it should.
+
+To do that just iterate over the `TestCase` results and parse the YAML and verify however you like in go code.
+
+Here is an [example test case doing that](https://github.com/jenkins-x-charts/jxboot-helmfile-resources/blob/master/tests/chart_test.go#L13) which verifies all kinds of different input configurations (e.g. for custom environments, no environments, remote environments and whatnot)
