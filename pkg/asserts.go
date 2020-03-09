@@ -37,6 +37,7 @@ func AssertTextFileContentEqual(t *testing.T, expectedFile, actualFile, testName
 func AssertHelmTemplate(t *testing.T, chart string, outDir, valuesDir string) (string, []string, error) {
 	fileNames := []string{}
 	releaseName := "myrel"
+	ns := "jx"
 
 	helm2, err := checkIfHelm2(t)
 	if err != nil {
@@ -57,7 +58,7 @@ func AssertHelmTemplate(t *testing.T, chart string, outDir, valuesDir string) (s
 		require.NoError(t, err, "failed to build dependencies: helm %s", strings.Join(args, " "))
 	}
 
-	args := []string{"template", releaseName, chart, "--output-dir", outDir}
+	args := []string{"template", releaseName, chart, "--output-dir", outDir, "--namespace", ns}
 	if helm2 {
 		t.Logf("using helm 2.x binary/n")
 		args = []string{"template", "--name", releaseName, chart, "--output-dir", outDir}
