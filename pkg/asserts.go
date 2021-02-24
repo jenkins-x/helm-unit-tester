@@ -48,7 +48,7 @@ func AssertHelmTemplate(t *testing.T, chart string, outDir, valuesDir string) (s
 	exists, err := FileExists(requirementsFile)
 	if err == nil && exists {
 		// lets fetch dependencies
-		t.Logf("building helm dependencies/n")
+		t.Logf("building helm dependencies\n")
 		args := []string{"dependency", "build", chart}
 		cmd := exec.Command("helm", args...)
 		data, err := cmd.CombinedOutput()
