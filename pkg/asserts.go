@@ -46,7 +46,7 @@ func AssertHelmTemplate(t *testing.T, chart string, outDir, valuesDir string) (s
 	// lets check if we have a requirements file
 	requirementsFile := filepath.Join(chart, "requirements.yaml")
 	exists, err := FileExists(requirementsFile)
-	if err == nil && exists {
+	if err == nil && exists && os.Getenv("HELM_NO_DEPENDENCIES") != "true " {
 		// lets fetch dependencies
 		t.Logf("building helm dependencies\n")
 		args := []string{"dependency", "build", chart}
